@@ -9,8 +9,8 @@ pit_stops as (
 ),
 
 final as (
-    select * from drivers
-    left join pit_stops on pit_stops.driverID = drivers.driverID
+    select * from pit_stops
+    left join drivers on pit_stops.driverID = drivers.driverID
 )
 
 select * from final
