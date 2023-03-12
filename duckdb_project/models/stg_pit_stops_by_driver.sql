@@ -1,11 +1,11 @@
 {{ config(materialized='view')}}
 
 with drivers as (
-    select * from main.raw_drivers
+    select * from {{ref('raw_drivers')}}
 ),
 
 pit_stops as (
-    select * from main.raw_pit_stops
+    select * from {{ref('raw_pit_stops')}}
 ),
 
 final as (
