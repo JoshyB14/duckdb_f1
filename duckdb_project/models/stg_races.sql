@@ -1,24 +1,25 @@
--- Purpose: Cleaned staging model of raw_pit_stops
+-- Purpose: Cleaned staging model of raw_races
 --------------------------------------------------------------------------------
 -- Version      Date        Author          Comments
--- 1.0          12/3/23     Josh Bryden     Inital Release
+-- 1.0          13/3/23     Josh Bryden     Inital Release
 --------------------------------------------------------------------------------
 
 -- import
 with input as (
-    select * from {{ref('raw_pit_stops')}}
+    select * from {{ref('raw_races')}}
 ),
 
 -- cleaning up column names and taking only needed cols 
 staging as (
     select
         raceId as race_id,
-        driverId as driver_id,
-        stop as stop_number,
-        lap as lap_number,
-        time as local_time,
-        duration as pit_stop_duration_seconds,
-        milliseconds as pit_stop_duration_milliseconds
+        year as year,
+        round as round_number,
+        circuitId as circuit_id,
+        name as race_name,
+        date as race_date,
+        replace(time,'\N','') as race_time -- remove new line chars
+        -- other cols in raw_races are mostly (>90%) new line chars. Hence remove.
     from input
 ),
 
@@ -26,10 +27,7 @@ staging as (
 dedup as (
     select
         *,
-        row_number() over(partition by race_id,
-                                        driver_id,
-                                        stop_number,
-                                        lap_number) as rn
+        row_number() over(partition by race_id, driver_id) as rn
     from staging
 ),
 
@@ -43,3 +41,4 @@ final as (
 )
 
 select * from final
+
