@@ -1,4 +1,4 @@
--- Purpose: Cleaned staging model of raw_qualifying
+-- Purpose: Cleaned staging model of raw_sprint_results
 --------------------------------------------------------------------------------
 -- Version      Date        Author          Comments
 -- 1.0          13/3/23     Josh Bryden     Inital Release
@@ -6,7 +6,7 @@
 
 -- import
 with input as (
-    select * from {{ref('raw_qualifying')}}
+    select * from {{ref('raw_sprint_results')}}
 ),
 
 -- cleaning up column names and taking only needed cols 
@@ -16,10 +16,16 @@ staging as (
         driverId as driver_id,
         constructorId as constructor_id,
         number as car_number,
-        position as final_qualigying_position,
-        replace(q1, '\N','') as q1_time, -- remove new line chars
-        replace(q2, '\N','') as q2_time, -- remove new line chars
-        replace(q3, '\N','') as q3_time -- remove new line chars
+        grid as starting_grid_position,
+        position as final_position,
+        positionOrder as final_rank,
+        points as points,
+        laps as number_of_laps,
+        time as total_time,
+        milliseconds as total_time_milliseconds,
+        fastestLap as fastest_lap,
+        fastestLapTime as fastest_lap_time,
+        statusId as status_id
     from input
 ),
 

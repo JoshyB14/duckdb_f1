@@ -27,7 +27,7 @@ staging as (
 dedup as (
     select
         *,
-        row_number() over(partition by race_id, driver_id) as rn
+        row_number() over(partition by race_id, year) as rn
     from staging
 ),
 

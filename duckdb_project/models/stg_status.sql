@@ -1,4 +1,4 @@
--- Purpose: Cleaned staging model of raw_qualifying
+-- Purpose: Cleaned staging model of raw_status
 --------------------------------------------------------------------------------
 -- Version      Date        Author          Comments
 -- 1.0          13/3/23     Josh Bryden     Inital Release
@@ -6,20 +6,14 @@
 
 -- import
 with input as (
-    select * from {{ref('raw_qualifying')}}
+    select * from {{ref('raw_status')}}
 ),
 
 -- cleaning up column names and taking only needed cols 
 staging as (
     select
-        raceId as race_id,
-        driverId as driver_id,
-        constructorId as constructor_id,
-        number as car_number,
-        position as final_qualigying_position,
-        replace(q1, '\N','') as q1_time, -- remove new line chars
-        replace(q2, '\N','') as q2_time, -- remove new line chars
-        replace(q3, '\N','') as q3_time -- remove new line chars
+        statusId as status_id,
+        status as status_text
     from input
 ),
 
@@ -27,7 +21,7 @@ staging as (
 dedup as (
     select
         *,
-        row_number() over(partition by race_id, driver_id) as rn
+        row_number() over(partition by status_id, status_text) as rn
     from staging
 ),
 
